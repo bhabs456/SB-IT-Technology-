@@ -84,10 +84,10 @@ export function TestimonialsSection() {
             loop: false,
             slidesToScroll: 1,
             breakpoints: {
-              "(md)": {
+              "(min-width: 768px)": {
                 slidesToScroll: 2, // 💻 Tab: Moves 3 cards at a time
               },
-              "(lg)": {
+              "(min-width: 1024px)": {
                 slidesToScroll: 3, // 💻 Desktop: Moves 3 cards at a time
               },
             },

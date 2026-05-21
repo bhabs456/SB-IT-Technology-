@@ -98,10 +98,10 @@ export function CategoriesSection() {
             loop: false,
             slidesToScroll: 2,
             breakpoints: {
-              "(md)": {
+              "(min-width: 768px)": {
                 slidesToScroll: 4, // 💻 Tab: Moves 4 cards at a time
               },
-              "(lg)": {
+              "(min-width: 1024px)": {
                 slidesToScroll: 5, // 💻 Desktop: Moves 5 cards at a time
               },
             },
