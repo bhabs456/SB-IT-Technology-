@@ -91,7 +91,7 @@ export function CategoriesSection() {
 
         {/* Added standard negative margin to Carousel via components if needed, 
             or handling standard gap spacing on CarouselContent */}
-        <Carousel 
+        <Carousel
           opts={{
             align: "start",
             loop: false,
@@ -100,8 +100,8 @@ export function CategoriesSection() {
         >
           <CarouselContent className="-ml-4">
             {categories.map((category) => (
-              <CarouselItem 
-                key={category.name} 
+              <CarouselItem
+                key={category.name}
                 className="pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
               >
                 <Link
@@ -123,10 +123,11 @@ export function CategoriesSection() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          
+
           {/* Hidden on small screens so they don't overlap your layout awkwardly */}
           <CarouselPrevious className="hidden md:inline-flex" />
           <CarouselNext className="hidden md:inline-flex" />
+
         </Carousel>
       </div>
     </section>
