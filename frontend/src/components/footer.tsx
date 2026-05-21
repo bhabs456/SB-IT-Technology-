@@ -81,6 +81,8 @@ export function Footer() {
       })
       .catch((err) =>
         console.error("Footer: Failed to fetch site settings:", err),
+
+      
       );
   }, []);
   return (
