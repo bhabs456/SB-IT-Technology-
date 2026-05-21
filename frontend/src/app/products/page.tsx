@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
@@ -320,7 +321,7 @@ function FilterSidebar({
   )
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get("category")
   
@@ -523,5 +524,13 @@ export default function ProductsPage() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   )
 }
