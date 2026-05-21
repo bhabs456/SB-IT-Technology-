@@ -9,6 +9,7 @@ import {
   Speaker,
   Cpu,
 } from "lucide-react";
+
 import {
   Carousel,
   CarouselContent,
@@ -95,6 +96,15 @@ export function CategoriesSection() {
           opts={{
             align: "start",
             loop: false,
+            slidesToScroll: 2,
+            breakpoints: {
+              "(md)": {
+                slidesToScroll: 4, // 💻 Tab: Moves 4 cards at a time
+              },
+              "(lg)": {
+                slidesToScroll: 5, // 💻 Desktop: Moves 5 cards at a time
+              },
+            },
           }}
           className="w-full"
         >
