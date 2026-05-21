@@ -1,5 +1,21 @@
-import Link from "next/link"
-import { Laptop, Smartphone, Headphones, Gamepad2, Watch } from "lucide-react"
+import Link from "next/link";
+import {
+  Laptop,
+  Smartphone,
+  Headphones,
+  Gamepad2,
+  Watch,
+  Tablet,
+  Speaker,
+  Cpu,
+} from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const categories = [
   {
@@ -37,7 +53,28 @@ const categories = [
     href: "/products?category=wearables",
     color: "bg-indigo-500/10 text-indigo-600",
   },
-]
+  {
+    name: "Tablets",
+    description: "iPads & Android Tablets",
+    icon: Tablet,
+    href: "/products?category=tablets",
+    color: "bg-purple-500/10 text-purple-600",
+  },
+  {
+    name: "Speakers",
+    description: "Bluetooth & Home Audio",
+    icon: Speaker,
+    href: "/products?category=speakers",
+    color: "bg-amber-500/10 text-amber-600",
+  },
+  {
+    name: "CPUs",
+    description: "Intel Core & AMD Ryzen",
+    icon: Cpu,
+    href: "/products?category=cpus",
+    color: "bg-cyan-500/10 text-cyan-600",
+  },
+];
 
 export function CategoriesSection() {
   return (
@@ -51,28 +88,47 @@ export function CategoriesSection() {
             Find exactly what you need across our curated categories
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {categories.map((category) => (
-            <Link
-              key={category.name}
-              href={category.href}
-              className="group flex flex-col items-center gap-4 rounded-2xl border bg-card p-6 text-center transition-all hover:border-primary/20 hover:shadow-lg"
-            >
-              <div
-                className={`flex h-16 w-16 items-center justify-center rounded-2xl ${category.color} transition-transform group-hover:scale-110`}
+
+        {/* Added standard negative margin to Carousel via components if needed, 
+            or handling standard gap spacing on CarouselContent */}
+        <Carousel 
+          opts={{
+            align: "start",
+            loop: false,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-4">
+            {categories.map((category) => (
+              <CarouselItem 
+                key={category.name} 
+                className="pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
               >
-                <category.icon className="h-8 w-8" />
-              </div>
-              <div>
-                <h3 className="font-semibold">{category.name}</h3>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {category.description}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+                <Link
+                  href={category.href}
+                  className="group flex h-full flex-col items-center gap-4 rounded-2xl border bg-card p-6 text-center transition-all hover:border-primary/20 hover:shadow-lg"
+                >
+                  <div
+                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl ${category.color} transition-transform group-hover:scale-110`}
+                  >
+                    <category.icon className="h-8 w-8" />
+                  </div>
+                  <div className="flex flex-col justify-between">
+                    <h3 className="font-semibold">{category.name}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      {category.description}
+                    </p>
+                  </div>
+                </Link>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          {/* Hidden on small screens so they don't overlap your layout awkwardly */}
+          <CarouselPrevious className="hidden md:inline-flex" />
+          <CarouselNext className="hidden md:inline-flex" />
+        </Carousel>
       </div>
     </section>
-  )
+  );
 }

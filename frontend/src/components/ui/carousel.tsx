@@ -58,8 +58,10 @@ function Carousel({
     },
     plugins,
   )
+  
+  // FIXED: Start canScrollNext as true so it doesn't instantly hide on frame load
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-  const [canScrollNext, setCanScrollNext] = React.useState(false)
+  const [canScrollNext, setCanScrollNext] = React.useState(true)
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
@@ -95,12 +97,18 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return
+    
+    // Evaluate right away
     onSelect(api)
+    
+    // Listen to changes
     api.on('reInit', onSelect)
     api.on('select', onSelect)
 
+    // FIXED: Clean up all event tracks perfectly
     return () => {
       api?.off('select', onSelect)
+      api?.off('reInit', onSelect)
     }
   }, [api, onSelect])
 
@@ -185,9 +193,11 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        'absolute size-8 rounded-full',
+        'absolute size-8 rounded-full cursor-pointer',
+        // Shakes off display when it hits start boundary
+        !canScrollPrev ? 'hidden' : 'inline-flex',
         orientation === 'horizontal'
-          ? 'top-1/2 -left-12 -translate-y-1/2'
+          ? 'top-1/2 -left-4 -translate-y-1/2'
           : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
         className,
       )}
@@ -215,9 +225,11 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        'absolute size-8 rounded-full',
+        'absolute size-8 rounded-full cursor-pointer',
+        // Shakes off display when it hits end boundary
+        !canScrollNext ? 'hidden' : 'inline-flex',
         orientation === 'horizontal'
-          ? 'top-1/2 -right-12 -translate-y-1/2'
+          ? 'top-1/2 -right-4 -translate-y-1/2'
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
         className,
       )}
