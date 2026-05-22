@@ -22,27 +22,31 @@ import {
 } from "lucide-react";
 
 // Sample product data
-const products: Record<string, {
-  id: string
-  name: string
-  description: string
-  longDescription: string
-  price: number
-  originalPrice?: number
-  rating: number
-  reviewCount: number
-  category: string
-  badge?: string
-  inStock: boolean
-  specs: { label: string; value: string }[]
-  features: string[]
-  images: string[]
-}> = {
+const products: Record<
+  string,
+  {
+    id: string;
+    name: string;
+    description: string;
+    longDescription: string;
+    price: number;
+    originalPrice?: number;
+    rating: number;
+    reviewCount: number;
+    category: string;
+    badge?: string;
+    inStock: boolean;
+    specs: { label: string; value: string }[];
+    features: string[];
+    images: string[];
+  }
+> = {
   "1": {
     id: "1",
-    name: "MacBook Pro 16\" M3 Max",
+    name: 'MacBook Pro 16" M3 Max',
     description: "Apple M3 Max chip, 36GB RAM, 1TB SSD",
-    longDescription: "The most powerful MacBook Pro ever. The M3 Max chip delivers exceptional performance for the most demanding professional workflows. With up to 36GB of unified memory, the 16-inch Liquid Retina XDR display, and all-day battery life, this is the ultimate pro notebook.",
+    longDescription:
+      "The most powerful MacBook Pro ever. The M3 Max chip delivers exceptional performance for the most demanding professional workflows. With up to 36GB of unified memory, the 16-inch Liquid Retina XDR display, and all-day battery life, this is the ultimate pro notebook.",
     price: 3499,
     originalPrice: 3999,
     rating: 4.9,
@@ -54,7 +58,7 @@ const products: Record<string, {
       { label: "Chip", value: "Apple M3 Max" },
       { label: "Memory", value: "36GB Unified Memory" },
       { label: "Storage", value: "1TB SSD" },
-      { label: "Display", value: "16.2\" Liquid Retina XDR" },
+      { label: "Display", value: '16.2" Liquid Retina XDR' },
       { label: "Resolution", value: "3456 x 2234 pixels" },
       { label: "Battery", value: "Up to 22 hours" },
       { label: "Weight", value: "2.14 kg (4.7 pounds)" },
@@ -69,9 +73,13 @@ const products: Record<string, {
       "Force Touch trackpad",
       "802.11ax Wi-Fi 6E + Bluetooth 5.3",
     ],
-    images: ["/products/macbook-1.jpg", "/products/macbook-2.jpg", "/products/macbook-3.jpg"],
+    images: [
+      "/products/macbook-1.jpg",
+      "/products/macbook-2.jpg",
+      "/products/macbook-3.jpg",
+    ],
   },
-}
+};
 
 const reviews = [
   {
@@ -80,7 +88,8 @@ const reviews = [
     rating: 5,
     date: "2 weeks ago",
     title: "Absolutely incredible machine",
-    content: "This is hands down the best laptop I have ever used. The M3 Max chip handles everything I throw at it - video editing, 3D rendering, multiple VMs. Battery life is phenomenal too.",
+    content:
+      "This is hands down the best laptop I have ever used. The M3 Max chip handles everything I throw at it - video editing, 3D rendering, multiple VMs. Battery life is phenomenal too.",
     verified: true,
   },
   {
@@ -89,7 +98,8 @@ const reviews = [
     rating: 5,
     date: "1 month ago",
     title: "Worth every penny",
-    content: "As a software developer, this machine has transformed my workflow. Compiles are lightning fast, Docker runs smooth, and I can easily have 50+ Chrome tabs open without any slowdown.",
+    content:
+      "As a software developer, this machine has transformed my workflow. Compiles are lightning fast, Docker runs smooth, and I can easily have 50+ Chrome tabs open without any slowdown.",
     verified: true,
   },
   {
@@ -98,38 +108,92 @@ const reviews = [
     rating: 4,
     date: "1 month ago",
     title: "Great but pricey",
-    content: "The performance is outstanding and the display is gorgeous. My only complaint is the price, but you definitely get what you pay for. The speakers are also surprisingly good.",
+    content:
+      "The performance is outstanding and the display is gorgeous. My only complaint is the price, but you definitely get what you pay for. The speakers are also surprisingly good.",
     verified: true,
   },
-]
+];
 
 const relatedProducts: Product[] = [
-  { id: "14", name: "MacBook Air 15\" M3", description: "Apple M3 chip, 8GB RAM, 256GB SSD", price: 1299, rating: 4.8, reviewCount: 4532, category: "Laptops", badge: "New", inStock: true },
-  { id: "7", name: "AirPods Pro 2nd Gen", description: "Active Noise Cancellation, USB-C", price: 249, rating: 4.8, reviewCount: 15234, category: "Headphones", badge: "Top Rated", inStock: true },
-  { id: "5", name: "Apple Watch Ultra 2", description: "49mm Titanium, GPS + Cellular", price: 799, rating: 4.9, reviewCount: 3287, category: "Wearables", inStock: true },
-  { id: "2", name: "iPhone 16 Pro Max 256GB", description: "6.9\" Super Retina XDR, A18 Pro chip", price: 1199, rating: 4.8, reviewCount: 5621, category: "Smartphones", badge: "New", inStock: true },
-]
+  {
+    id: "14",
+    name: 'MacBook Air 15" M3',
+    description: "Apple M3 chip, 8GB RAM, 256GB SSD",
+    price: 1299,
+    rating: 4.8,
+    reviewCount: 4532,
+    category: "Laptops",
+    badge: "New",
+    inStock: true,
+  },
+  {
+    id: "7",
+    name: "AirPods Pro 2nd Gen",
+    description: "Active Noise Cancellation, USB-C",
+    price: 249,
+    rating: 4.8,
+    reviewCount: 15234,
+    category: "Headphones",
+    badge: "Top Rated",
+    inStock: true,
+  },
+  {
+    id: "5",
+    name: "Apple Watch Ultra 2",
+    description: "49mm Titanium, GPS + Cellular",
+    price: 799,
+    rating: 4.9,
+    reviewCount: 3287,
+    category: "Wearables",
+    inStock: true,
+  },
+  {
+    id: "2",
+    name: "iPhone 16 Pro Max 256GB",
+    description: '6.9" Super Retina XDR, A18 Pro chip',
+    price: 1199,
+    rating: 4.8,
+    reviewCount: 5621,
+    category: "Smartphones",
+    badge: "New",
+    inStock: true,
+  },
+];
 
-export default function ProductDetailContent({ productId }: { productId: string }) {
-  const product = products[productId] || products["1"]
-  
-  const [quantity, setQuantity] = useState(1)
-  const [selectedImage, setSelectedImage] = useState(0)
-  const [isWishlisted, setIsWishlisted] = useState(false)
+export default function ProductDetailContent({
+  productId,
+}: {
+  productId: string;
+}) {
+  const product = products[productId] || products["1"];
+
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100,
+      )
+    : 0;
+  const [clickedIndex, setClickedIndex] = useState<number | null>(null);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
       <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">Home</Link>
+        <Link href="/" className="hover:text-foreground">
+          Home
+        </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link href="/products" className="hover:text-foreground">Products</Link>
+        <Link href="/products" className="hover:text-foreground">
+          Products
+        </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link href={`/products?category=${product.category.toLowerCase()}`} className="hover:text-foreground">
+        <Link
+          href={`/products?category=${product.category.toLowerCase()}`}
+          className="hover:text-foreground"
+        >
           {product.category}
         </Link>
         <ChevronRight className="h-4 w-4" />
@@ -139,10 +203,16 @@ export default function ProductDetailContent({ productId }: { productId: string 
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Product Images */}
         <div className="flex flex-col gap-4">
-          <div className="relative aspect-square overflow-hidden rounded-3xl bg-secondary/50">
+          <div className="relative aspect-square overflow-hidden rounded-3xl">
             <div className="flex h-full items-center justify-center">
               <div className="h-74 w-74 rounded-3xl">
-                <Image src={product.images[0]} alt={product.name} width={500} height={500} className="object-cover rounded-xl"/>
+                <Image
+                  src={product.images[selectedImage]}
+                  alt={product.name}
+                  fill
+                  priority
+                  className="object-cover rounded-xl"
+                />
               </div>
             </div>
             {product.badge && (
@@ -155,16 +225,21 @@ export default function ProductDetailContent({ productId }: { productId: string 
             )}
           </div>
           <div className="flex gap-3">
-            {[0, 1, 2].map((i) => (
+            {product.images.map((imageSrc, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedImage(i)}
-                className={`aspect-square w-20 overflow-hidden rounded-xl bg-secondary/50 transition-all ${
-                  selectedImage === i ? "ring-2 ring-primary ring-offset-2" : ""
-                }`}
+                className={`aspect-square w-20 overflow-hidden cursor-pointer rounded-xl transition-all duration-200 
+                ${selectedImage === i ? "border-2 border-primary/60 bg-background shadow-sm opacity-100" : "border-2 border-transparent"}
+                `}
               >
-                <div className="flex h-full items-center justify-center">
-                  <div className="h-12 w-12 rounded-lg bg-primary/10" />
+                <div className="relative h-full w-full">
+                  <Image
+                    src={imageSrc}
+                    alt={`${product.name} thumbnail`}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </button>
             ))}
@@ -193,24 +268,33 @@ export default function ProductDetailContent({ productId }: { productId: string 
               ))}
             </div>
             <span className="font-medium">{product.rating}</span>
-            <span className="text-muted-foreground">({product.reviewCount.toLocaleString()} reviews)</span>
+            <span className="text-muted-foreground">
+              ({product.reviewCount.toLocaleString()} reviews)
+            </span>
           </div>
 
           {/* Price */}
           <div className="mt-6 flex items-baseline gap-3">
-            <span className="text-4xl font-bold">${product.price.toLocaleString()}</span>
+            <span className="text-4xl font-bold">
+              ${product.price.toLocaleString()}
+            </span>
             {product.originalPrice && (
               <span className="text-xl text-muted-foreground line-through">
                 ${product.originalPrice.toLocaleString()}
               </span>
             )}
             {discount > 0 && (
-              <Badge variant="destructive">Save ${(product.originalPrice! - product.price).toLocaleString()}</Badge>
+              <Badge variant="destructive">
+                Save $
+                {(product.originalPrice! - product.price).toLocaleString()}
+              </Badge>
             )}
           </div>
 
           {/* Description */}
-          <p className="mt-6 text-muted-foreground">{product.longDescription}</p>
+          <p className="mt-6 text-muted-foreground">
+            {product.longDescription}
+          </p>
 
           {/* Quantity and Add to Cart */}
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -271,7 +355,9 @@ export default function ProductDetailContent({ productId }: { productId: string 
               </div>
               <div>
                 <p className="font-medium">1 Year Warranty</p>
-                <p className="text-sm text-muted-foreground">Official guarantee</p>
+                <p className="text-sm text-muted-foreground">
+                  Official guarantee
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -291,7 +377,9 @@ export default function ProductDetailContent({ productId }: { productId: string 
               <>
                 <Check className="h-5 w-5 text-emerald-500" />
                 <span className="text-emerald-600">In Stock</span>
-                <span className="text-muted-foreground">- Ships within 24 hours</span>
+                <span className="text-muted-foreground">
+                  - Ships within 24 hours
+                </span>
               </>
             ) : (
               <span className="text-destructive">Out of Stock</span>
@@ -304,13 +392,17 @@ export default function ProductDetailContent({ productId }: { productId: string 
       <div className="mt-16">
         <Tabs defaultValue="specs" className="w-full">
           <TabsList className="w-full justify-start rounded-xl bg-secondary/50 p-1">
-            <TabsTrigger value="specs" className="rounded-lg">Specifications</TabsTrigger>
-            <TabsTrigger value="features" className="rounded-lg">Features</TabsTrigger>
+            <TabsTrigger value="specs" className="rounded-lg">
+              Specifications
+            </TabsTrigger>
+            <TabsTrigger value="features" className="rounded-lg">
+              Features
+            </TabsTrigger>
             <TabsTrigger value="reviews" className="rounded-lg">
               Reviews ({product.reviewCount.toLocaleString()})
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="specs" className="mt-6">
             <div className="rounded-2xl border bg-card">
               <div className="divide-y">
@@ -348,14 +440,19 @@ export default function ProductDetailContent({ productId }: { productId: string 
                     <div className="flex items-center gap-3">
                       <Avatar>
                         <AvatarFallback className="bg-primary/10 text-primary">
-                          {review.author.split(" ").map((n) => n[0]).join("")}
+                          {review.author
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{review.author}</span>
                           {review.verified && (
-                            <Badge variant="secondary" className="text-xs">Verified Purchase</Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              Verified Purchase
+                            </Badge>
                           )}
                         </div>
                         <div className="flex items-center gap-2">
@@ -371,7 +468,9 @@ export default function ProductDetailContent({ productId }: { productId: string 
                               />
                             ))}
                           </div>
-                          <span className="text-sm text-muted-foreground">{review.date}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {review.date}
+                          </span>
                         </div>
                       </div>
                     </div>

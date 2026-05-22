@@ -1,12 +1,12 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ProductCard, type Product } from "@/components/product-card"
-import { ArrowRight } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ProductCard, type Product } from "@/components/product-card";
+import { ArrowRight } from "lucide-react";
 
 const trendingProducts: Product[] = [
   {
     id: "1",
-    name: "MacBook Pro 16\" M3 Max",
+    name: 'MacBook Pro 16" M3 Max',
     description: "Apple M3 Max chip, 36GB RAM, 1TB SSD",
     price: 3499,
     originalPrice: 3999,
@@ -19,7 +19,7 @@ const trendingProducts: Product[] = [
   {
     id: "2",
     name: "iPhone 16 Pro Max 256GB",
-    description: "6.9\" Super Retina XDR, A18 Pro chip",
+    description: '6.9" Super Retina XDR, A18 Pro chip',
     price: 1199,
     rating: 4.8,
     reviewCount: 5621,
@@ -62,7 +62,7 @@ const trendingProducts: Product[] = [
   {
     id: "6",
     name: "Samsung Galaxy S24 Ultra",
-    description: "6.8\" Dynamic AMOLED, S Pen included",
+    description: '6.8" Dynamic AMOLED, S Pen included',
     price: 1099,
     originalPrice: 1299,
     rating: 4.7,
@@ -91,7 +91,7 @@ const trendingProducts: Product[] = [
     category: "Gaming",
     inStock: true,
   },
-]
+];
 
 export function TrendingSection() {
   return (
@@ -113,12 +113,17 @@ export function TrendingSection() {
             </Link>
           </Button>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {trendingProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {trendingProducts.map((product, index) => (
+            <div
+              key={product.id}
+              className={index >= 4 ? "hidden sm:block" : "block"}
+            >
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

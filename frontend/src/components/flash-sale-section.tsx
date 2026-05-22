@@ -112,9 +112,9 @@ function TimeBlock({ value, label }: { value: number; label: string }) {
 
 export function FlashSaleSection() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-16 sm:py-24 hidden sm:block">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-8 sm:p-12">
+        <div className="overflow-hidden rounded-3xl bg-linear-to-r from-primary/10 via-primary/5 to-transparent p-8 sm:p-12">
           <div className="mb-8 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary">

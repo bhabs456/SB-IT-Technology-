@@ -54,7 +54,7 @@ export async function BrandsSection() {
               {safeBrandPartners.map((brand, index) => {
                 const logoUrl = urlFor(brand.logo).width(200).url();
                 const content = (
-                  <div className="relative h-12 w-28 opacity-60 hover:opacity-100 transition-all duration-300">
+                  <div className="relative h-12 w-28 opacity-100 sm:opacity-60 hover:opacity-100 transition-all duration-300">
                     <Image
                       src={logoUrl}
                       alt={`${brand.name} logo`}
