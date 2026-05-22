@@ -13,3 +13,13 @@ export const siteSettings_QUERY = groq`
     copyrightText
   }
 `;
+
+export const categoriesQuery = groq`
+  *[_type == "category"] | order(order asc, name asc) {
+    name,
+    "slug": slug.current,
+    description,
+    icon,
+    brandColor
+  }
+`;

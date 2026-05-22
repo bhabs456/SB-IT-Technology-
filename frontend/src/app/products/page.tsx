@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
@@ -267,13 +267,13 @@ function FilterSidebar({
         <AccordionItem value="price">
           <AccordionTrigger className="text-sm font-semibold">Price Range</AccordionTrigger>
           <AccordionContent>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Slider
                 value={priceRange}
                 onValueChange={setPriceRange}
                 max={5000}
                 step={50}
-                className="w-full h-4"
+                className="w-full h-6"
               />
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>${priceRange[0]}</span>
@@ -328,9 +328,24 @@ function ProductsContent() {
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("featured")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    categoryParam ? [categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1)] : []
-  )
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+
+  useEffect(() => {
+    if (categoryParam) {
+      const categorySlugMap: Record<string, string> = {
+        "laptops": "Laptops",
+        "smartphones": "Smartphones",
+        "headphones": "Headphones",
+        "gaming": "Gaming",
+        "wearables": "Wearables",
+      };
+      const mapped = categorySlugMap[categoryParam.toLowerCase()] || 
+                     (categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1));
+      setSelectedCategories([mapped]);
+    } else {
+      setSelectedCategories([]);
+    }
+  }, [categoryParam])
   const [priceRange, setPriceRange] = useState([0, 5000])
   const [selectedRatings, setSelectedRatings] = useState<number[]>([])
 

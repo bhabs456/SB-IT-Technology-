@@ -63,7 +63,7 @@ export function Footer() {
   const [siteName, setSiteName] = useState("SB IT Technology");
   const [siteLogo, setSiteLogo] = useState<any>(null);
   const [description, setDescription] = useState(
-    "Your trusted destination for premium electronics. Quality products, competitive prices, and exceptional service.",
+    "From the latest smartphones and high-performance laptops to essential IT hardware and accessories, we bring you top brands at the best prices. Experience reliable service, genuine products, and expert guidance right in your city.",
   );
   const [socials, setSocials] = useState<any[]>([]);
   const [copyrightText, setCopyrightText] = useState("");
@@ -80,9 +80,7 @@ export function Footer() {
         }
       })
       .catch((err) =>
-        console.error("Footer: Failed to fetch site settings:", err),
-
-      
+        console.error("Footer: Failed to fetch site settings:", err)
       );
   }, []);
   return (
@@ -102,7 +100,10 @@ export function Footer() {
                   />
                 </div>
               ) : (
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl ">
+                  <span className="text-sm font-bold text-primary-foreground">
+                    {siteName.charAt(0)}
+                  </span>
                 </div>
               )}
               <span className="text-xl font-bold tracking-tight">
@@ -201,7 +202,7 @@ export function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
             {copyrightText ||
-              `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`}
+              `© ${new Date().getFullYear()} ${siteName}. All Rights Reserved.`}
           </p>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">

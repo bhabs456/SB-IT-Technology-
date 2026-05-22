@@ -1,4 +1,6 @@
-// cms-sanity/schemaTypes/index.ts
+import category from './category'
 import siteSettings from './siteSettings'
 
-export const schemaTypes = [siteSettings]
+export const schemaTypes = [siteSettings, category]
+
+

@@ -71,7 +71,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-1">
           {siteLogo ? (
-            <div className="relative h-9 w-9 overflow-hidden rounded-xl bgr">
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl">
               <Image
                 src={urlFor(siteLogo).width(100).height(100).url()}
                 alt={siteName}
@@ -82,7 +82,7 @@ export function Navbar() {
           ) : (
             <div className="flex h-9 w-9 items-center justify-center rounded-xl">
               <span className="text-lg font-bold text-primary-foreground">
-                {siteLogo}
+                {siteName.charAt(0)}
               </span>
             </div>
           )}
