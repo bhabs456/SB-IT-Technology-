@@ -1,8 +1,10 @@
-import createImageUrlBuilder from "@sanity/image-url"
-import { client } from "../client"
+//  The Correct Up-to-Date Way
+import { createImageUrlBuilder } from '@sanity/image-url'
 
-const builder = createImageUrlBuilder(client)
+// Fallback to empty strings if parameters aren't initialized yet
+const builder = createImageUrlBuilder({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '0akh2hu2',
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+})
 
-export function urlFor(source: any) {
-  return builder.image(source)
-}
+export const urlFor = (source: any) => builder.image(source)

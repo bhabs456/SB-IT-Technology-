@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+// components/footer.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-react";
@@ -41,14 +39,6 @@ const footerLinks = {
   ],
 };
 
-const socialLinks = [
-  { name: "Facebook", icon: Facebook, href: "#" },
-  { name: "Twitter", icon: Twitter, href: "#" },
-  { name: "Instagram", icon: Instagram, href: "#" },
-  { name: "YouTube", icon: Youtube, href: "#" },
-  { name: "LinkedIn", icon: Linkedin, href: "#" },
-];
-
 // Maps platform string values from Sanity to Lucide Icons
 const iconMap: Record<string, any> = {
   facebook: Facebook,
@@ -58,31 +48,20 @@ const iconMap: Record<string, any> = {
   linkedin: Linkedin,
 };
 
-export function Footer() {
-  // State for Sanity configurations
-  const [siteName, setSiteName] = useState("SB IT Technology");
-  const [siteLogo, setSiteLogo] = useState<any>(null);
-  const [description, setDescription] = useState(
-    "From the latest smartphones and high-performance laptops to essential IT hardware and accessories, we bring you top brands at the best prices. Experience reliable service, genuine products, and expert guidance right in your city.",
-  );
-  const [socials, setSocials] = useState<any[]>([]);
-  const [copyrightText, setCopyrightText] = useState("");
-  useEffect(() => {
-    client
-      .fetch(siteSettings_QUERY)
-      .then((data) => {
-        if (data) {
-          if (data.siteName) setSiteName(data.siteName);
-          if (data.siteLogo) setSiteLogo(data.siteLogo);
-          if (data.description) setDescription(data.description);
-          if (data.socials) setSocials(data.socials);
-          if (data.copyrightText) setCopyrightText(data.copyrightText);
-        }
-      })
-      .catch((err) =>
-        console.error("Footer: Failed to fetch site settings:", err)
-      );
-  }, []);
+// Drops data cache lock to 0 seconds on local host environment so content updates flash instantly
+const revalidateTime = process.env.NODE_ENV === "development" ? 0 : 3600;
+
+export async function Footer() {
+  // Fetch site variables synchronously directly on the server build layer
+  const data = await client.fetch(siteSettings_QUERY, {}, { next: { revalidate: revalidateTime } });
+
+  // Apply target constants with robust local fallbacks if fields are blank
+  const siteName = data?.siteName || "SB IT Technology";
+  const siteLogo = data?.siteLogo || null;
+  const description = data?.description || "From the latest smartphones and high-performance laptops to essential IT hardware and accessories, we bring you top brands at the best prices. Experience reliable service, genuine products, and expert guidance right in your city.";
+  const socials = data?.socials || [];
+  const copyrightText = data?.copyrightText || "";
+
   return (
     <footer className="border-t bg-card">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
@@ -100,13 +79,11 @@ export function Footer() {
                   />
                 </div>
               ) : (
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl ">
-                  <span className="text-sm font-bold text-primary-foreground">
-                    {siteName.charAt(0)}
-                  </span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
+                  {siteName.charAt(0)}
                 </div>
               )}
-              <span className="text-xl font-bold tracking-tight">
+              <span className="text-xl font-bold tracking-tight pl-1">
                 {siteName}
               </span>
             </Link>
@@ -117,9 +94,8 @@ export function Footer() {
             {/* Dynamic Social Icons */}
             {socials.length > 0 && (
               <div className="mt-6 flex items-center gap-3">
-                {socials.map((social, index) => {
-                  const IconComponent =
-                    iconMap[social.platform.toLowerCase()] || Globe;
+                {socials.map((social: any, index: number) => {
+                  const IconComponent = iconMap[social.platform.toLowerCase()] || Globe;
                   return (
                     <a
                       key={index}
@@ -136,7 +112,7 @@ export function Footer() {
               </div>
             )}
           </div>
-          {/* Links */}
+          {/* Links Layout Engines */}
           <div>
             <h3 className="text-sm font-semibold">Shop</h3>
             <ul className="mt-4 space-y-3">
@@ -198,11 +174,10 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        {/* Bottom Bar */}
+        {/* Bottom Bar Container */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            {copyrightText ||
-              `© ${new Date().getFullYear()} ${siteName}. All Rights Reserved.`}
+            {copyrightText || `© ${new Date().getFullYear()} ${siteName}. All Rights Reserved.`}
           </p>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">

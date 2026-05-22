@@ -1,6 +1,6 @@
-// frontend/src/lib/sanity.ts
 import { createClient } from "next-sanity"
-import createImageUrlBuilder from "@sanity/image-url"
+// 🚀 Changed from a default import to a named import using curly braces
+import { createImageUrlBuilder } from "@sanity/image-url"
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
@@ -9,6 +9,7 @@ export const client = createClient({
   useCdn: process.env.NODE_ENV === "production", // Dynamic caching
 })
 
+// Using the correctly imported builder engine
 const builder = createImageUrlBuilder(client)
 
 export function urlFor(source: any) {

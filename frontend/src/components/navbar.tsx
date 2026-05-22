@@ -1,74 +1,54 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Badge } from "@/components/ui/badge"
-import {
-  Search,
-  ShoppingCart,
-  Heart,
-  User,
-  Menu,
-  Laptop,
-  Smartphone,
-  Headphones,
-  Gamepad2,
-  Watch,
-  ChevronDown,
-} from "lucide-react"
+// components/navbar.tsx
+import Link from "next/link";
+import Image from "next/image";
+import * as LucideIcons from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 // Sanity imports
-import { client } from "@/sanity/client"
-import { siteSettings_QUERY } from "@/sanity/lib/queries"
-import { urlFor } from "@/sanity/lib/image"
+import { client } from "@/sanity/client";
+import { siteSettings_QUERY, categoriesQuery } from "@/sanity/lib/queries"; // Adjusted query path if needed
+import { urlFor } from "@/sanity/lib/image";
 
-const categories = [
-  { name: "Laptops", icon: Laptop, href: "/products?category=laptops" },
-  { name: "Smartphones", icon: Smartphone, href: "/products?category=smartphones" },
-  { name: "Headphones", icon: Headphones, href: "/products?category=headphones" },
-  { name: "Gaming", icon: Gamepad2, href: "/products?category=gaming" },
-  { name: "Wearables", icon: Watch, href: "/products?category=wearables" },
-]
+// Define TypeScript shapes matching your database fields
+interface SanityCategory {
+  name: string;
+  slug: string;
+  icon: string;
+}
 
-export function Navbar() {
-  const [cartCount] = useState(0)
-  const [wishlistCount] = useState(0)
-  
-  // State for dynamic Sanity data
-  const [siteName, setSiteName] = useState("SB IT Technology")
-  const [siteLogo, setSiteLogo] = useState<any>(null)
+// Drops local cache block to 0 seconds on localhost so you see data updates instantly
+const revalidateTime = process.env.NODE_ENV === "development" ? 0 : 3600;
 
-  useEffect(() => {
-    console.log("Navbar: Fetching site settings from Sanity...")
-    client.fetch(siteSettings_QUERY)
-      .then((data) => {
-        console.log("Navbar: Fetched site settings:", data)
-        if (data) {
-          if (data.siteName) setSiteName(data.siteName)
-          if (data.siteLogo) {
-            setSiteLogo(data.siteLogo)
-            console.log("Navbar: Logo URL resolved:", urlFor(data.siteLogo).width(100).height(100).url())
-          }
-        }
-      })
-      .catch((err) => console.error("Navbar: Failed to fetch site settings:", err))
-  }, [])
+async function getNavbarData() {
+  try {
+    // Fetch site configurations and category data in parallel on the server
+    const [settings, categories] = await Promise.all([
+      client.fetch(siteSettings_QUERY, {}, { next: { revalidate: revalidateTime } }),
+      client.fetch<SanityCategory[]>(categoriesQuery, {}, { next: { revalidate: revalidateTime } }),
+    ]);
+    return { settings, categories };
+  } catch (error) {
+    console.error("Navbar data pipeline failure:", error);
+    return { settings: null, categories: [] };
+  }
+}
+
+export async function Navbar() {
+  const { settings, categories } = await getNavbarData();
+
+  const siteName = settings?.siteName || "SB IT Technology";
+  const siteLogo = settings?.siteLogo || null;
+
+  // Static badge configurations (Ready for direct server binding hooks later)
+  const cartCount = 0;
+  const wishlistCount = 0;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-backdrop-filter:bg-card/80">
+    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
+        
+        {/* Logo and Brand Title Layout */}
         <Link href="/" className="flex items-center gap-1">
           {siteLogo ? (
             <div className="relative h-9 w-9 overflow-hidden rounded-xl">
@@ -80,37 +60,45 @@ export function Navbar() {
               />
             </div>
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl">
-              <span className="text-lg font-bold text-primary-foreground">
-                {siteName.charAt(0)}
-              </span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold">
+              {siteName.charAt(0)}
             </div>
           )}
-          <span className="hidden text-xl font-bold tracking-tight sm:inline-block">
+          <span className="hidden text-xl font-bold tracking-tight sm:inline-block pl-1">
             {siteName}
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation Router (Using safe CSS triggers to remove client states) */}
         <nav className="hidden items-center gap-1 lg:flex">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-1">
-                Categories
-                <ChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              {categories.map((category) => (
-                <DropdownMenuItem key={category.name} asChild>
-                  <Link href={category.href} className="flex items-center gap-2">
-                    <category.icon className="h-4 w-4" />
-                    {category.name}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="group relative inline-block">
+            <Button variant="ghost" className="gap-1 group-hover:bg-accent group-hover:text-accent-foreground cursor-pointer">
+              Categories
+              <LucideIcons.ChevronDown className="h-4 w-4 opacity-50 transition-transform duration-200 group-hover:rotate-180" />
+            </Button>
+            
+            {/* Popover list opened strictly by CSS parent group hover boundaries */}
+            {/* The invisible pt-2 creates a continuous bridge so the menu doesn't close as the cursor moves down */}
+            <div className="absolute left-0 top-full z-50 hidden w-52 pt-2 group-hover:block pointer-events-auto">
+              <div className="rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                {categories.map((category) => {
+                  // Resolve stored string token values ("Laptop") to actual Lucide component wrappers dynamically
+                  const IconComponent = (LucideIcons as any)[category.icon] || LucideIcons.HelpCircle;
+                  return (
+                    <Link
+                      key={category.slug}
+                      href={`/products?category=${category.slug}`}
+                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                    >
+                      <IconComponent className="h-4 w-4 text-muted-foreground" />
+                      <span>{category.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           <Button variant="ghost" asChild>
             <Link href="/products">All Products</Link>
           </Button>
@@ -122,30 +110,33 @@ export function Navbar() {
           </Button>
         </nav>
 
-        {/* Search Bar */}
+        {/* Desktop Search Engine Bar */}
         <div className="hidden max-w-md flex-1 px-8 md:block">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
+          <form action="/products" method="GET" className="relative">
+            <LucideIcons.Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
               type="search"
+              name="search"
               placeholder="Search products..."
-              className="h-10 w-full rounded-xl bg-secondary pl-10 pr-4"
+              className="flex h-10 w-full rounded-xl border border-input bg-secondary px-3 py-2 pl-10 pr-4 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
-          </div>
+          </form>
         </div>
 
-        {/* Right Actions */}
+        {/* Right Action Menu Operations panel */}
         <div className="flex items-center gap-1">
-          {/* Mobile Search */}
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Search className="h-5 w-5" />
-            <span className="sr-only">Search</span>
+          {/* Responsive Mobile Search Endpoint Link */}
+          <Button variant="ghost" size="icon" className="md:hidden" asChild>
+            <Link href="/search">
+              <LucideIcons.Search className="h-5 w-5" />
+              <span className="sr-only">Search</span>
+            </Link>
           </Button>
 
-          {/* Wishlist */}
+          {/* Wishlist Link Container */}
           <Button variant="ghost" size="icon" className="relative" asChild>
             <Link href="/wishlist">
-              <Heart className="h-5 w-5" />
+              <LucideIcons.Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <Badge
                   variant="destructive"
@@ -158,10 +149,10 @@ export function Navbar() {
             </Link>
           </Button>
 
-          {/* Cart */}
+          {/* Shopping Cart Link Container */}
           <Button variant="ghost" size="icon" className="relative" asChild>
             <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
+              <LucideIcons.ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <Badge className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs">
                   {cartCount}
@@ -171,89 +162,33 @@ export function Navbar() {
             </Link>
           </Button>
 
-          {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-                <span className="sr-only">Account</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-                <Link href="/login">Sign In</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/signup">Create Account</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/orders">My Orders</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/admin">Admin Dashboard</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* User Account Context Menu Drawer (Using standard CSS trigger) */}
+          <div className="group relative inline-block">
+            <Button variant="ghost" size="icon" className="group-hover:bg-accent group-hover:text-accent-foreground">
+              <LucideIcons.User className="h-5 w-5" />
+              <span className="sr-only">Account</span>
+            </Button>
+            <div className="absolute right-0 top-full z-50 hidden w-48 pt-2 group-hover:block">
+              <div className="rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                <Link href="/login" className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">Sign In</Link>
+                <Link href="/signup" className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">Create Account</Link>
+                <div className="-mx-1 my-1 h-px bg-muted" />
+                <Link href="/orders" className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">My Orders</Link>
+                <Link href="/admin" className="flex w-full items-center rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">Admin Dashboard</Link>
+              </div>
+            </div>
+          </div>
 
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <nav className="flex flex-col gap-4 pt-8">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search products..."
-                    className="h-10 w-full rounded-xl bg-secondary pl-10 pr-4"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 pt-4">
-                  <p className="px-2 text-sm font-medium text-muted-foreground">
-                    Categories
-                  </p>
-                  {categories.map((category) => (
-                    <Link
-                      key={category.name}
-                      href={category.href}
-                      className="flex items-center gap-3 rounded-lg px-2 py-2 text-sm hover:bg-secondary"
-                    >
-                      <category.icon className="h-4 w-4" />
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-                <div className="flex flex-col gap-1 border-t pt-4">
-                  <Link
-                    href="/products"
-                    className="rounded-lg px-2 py-2 text-sm hover:bg-secondary"
-                  >
-                    All Products
-                  </Link>
-                  <Link
-                    href="/deals"
-                    className="rounded-lg px-2 py-2 text-sm hover:bg-secondary"
-                  >
-                    Deals
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="rounded-lg px-2 py-2 text-sm hover:bg-secondary"
-                  >
-                    About
-                  </Link>
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
+          {/* Mobile Navigation Sidebar Drawer Menu Link Trigger */}
+          <Button variant="ghost" size="icon" className="lg:hidden" asChild>
+            <Link href="/menu">
+              <LucideIcons.Menu className="h-5 w-5" />
+              <span className="sr-only">Menu</span>
+            </Link>
+          </Button>
         </div>
+
       </div>
     </header>
-  )
+  );
 }
