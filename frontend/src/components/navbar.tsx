@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 
 // Sanity imports
 import { client } from "@/sanity/client";
-import { siteSettings_QUERY, categoriesQuery } from "@/sanity/lib/queries"; // Adjusted query path if needed
+import { siteSettingsQUERY, categoriesQuery } from "@/sanity/lib/queries"; // Adjusted query path if needed
 import { urlFor } from "@/sanity/lib/image";
 
 // Define TypeScript shapes matching your database fields
-interface SanityCategory {
+interface CategoryData {
   name: string;
   slug: string;
   icon: string;
@@ -24,8 +24,8 @@ async function getNavbarData() {
   try {
     // Fetch site configurations and category data in parallel on the server
     const [settings, categories] = await Promise.all([
-      client.fetch(siteSettings_QUERY, {}, { next: { revalidate: revalidateTime } }),
-      client.fetch<SanityCategory[]>(categoriesQuery, {}, { next: { revalidate: revalidateTime } }),
+      client.fetch(siteSettingsQUERY, {}, { next: { revalidate: revalidateTime } }),
+      client.fetch<CategoryData[]>(categoriesQuery, {}, { next: { revalidate: revalidateTime } }),
     ]);
     return { settings, categories };
   } catch (error) {

@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-r
 
 // Sanity imports
 import { client } from "@/sanity/client";
-import { siteSettings_QUERY } from "@/sanity/lib/queries";
+import { siteSettingsQUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 
 const footerLinks = {
@@ -53,7 +53,7 @@ const revalidateTime = process.env.NODE_ENV === "development" ? 0 : 3600;
 
 export async function Footer() {
   // Fetch site variables synchronously directly on the server build layer
-  const data = await client.fetch(siteSettings_QUERY, {}, { next: { revalidate: revalidateTime } });
+  const data = await client.fetch(siteSettingsQUERY, {}, { next: { revalidate: revalidateTime } });
 
   // Apply target constants with robust local fallbacks if fields are blank
   const siteName = data?.siteName || "SB IT Technology";

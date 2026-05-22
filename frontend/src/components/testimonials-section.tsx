@@ -1,3 +1,9 @@
+import Link from "next/link";
+import Image from "next/image";
+import { client } from "@/sanity/client";
+import { testimonialsQuery } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+
 import {
   Carousel,
   CarouselContent,
@@ -6,70 +12,52 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Star, Quote } from "lucide-react";
+interface TestimonialData {
+  _id: string;
+  author: string;
+  role: string; // Defaults to "Verified Buyer" via our schema config
+  rating: number; // Integer between 1 and 5
+  content: string; // The core review text quote
+  avatar?: {
+    _type: "image";
+    asset: {
+      _ref: string;
+      _type: "reference";
+    };
+  } | null; // Optional user avatar profile photo asset
+  isVerifiedPurchase: boolean;
+}
+
+
+import { Star, Quote, Check } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    role: "Software Engineer",
-    content:
-      "The best electronics shopping experience I've had online. Fast shipping, authentic products, and excellent customer service. Highly recommend!",
-    rating: 5,
-    avatar: "SC",
-  },
-  {
-    id: 2,
-    name: "Michael Rodriguez",
-    role: "Creative Director",
-    content:
-      "I bought my MacBook Pro here and the whole process was seamless. Great prices compared to other stores, and the product arrived perfectly packaged.",
-    rating: 4,
-    avatar: "MR",
-  },
-  {
-    id: 3,
-    name: "Emily Thompson",
-    role: "Photographer",
-    content:
-      "TechVault has become my go-to for all tech purchases. Their collection is impressive and the deals are unbeatable. Five stars all around!",
-    rating: 5,
-    avatar: "ET",
-  },
-  {
-    id: 4,
-    name: "Emily Thompson",
-    role: "Photographer",
-    content:
-      "TechVault has become my go-to for all tech purchases. Their collection is impressive and the deals are unbeatable. Five stars all around!",
-    rating: 5,
-    avatar: "ET",
-  },
-  {
-    id: 5,
-    name: "Emily Thompson",
-    role: "Photographer",
-    content:
-      "TechVault has become my go-to for all tech purchases. Their collection is impressive and the deals are unbeatable. Five stars all around!",
-    rating: 5,
-    avatar: "ET",
-  },
-  {
-    id: 6,
-    name: "Emily Thompson",
-    role: "Photographer",
-    content:
-      "TechVault has become my go-to for all tech purchases. Their collection is impressive and the deals are unbeatable. Five stars all around!",
-    rating: 5,
-    avatar: "ET",
-  },
-];
+export async function TestimonialsSection() {
+  let testimonials: TestimonialData[] = [];
 
-export function TestimonialsSection() {
+  try {
+    testimonials = await client.fetch<TestimonialData[]>(
+      testimonialsQuery,
+      {},
+      { next: { revalidate: 3600 } } // 1-hour ISR revalidation cache
+    );
+  } catch (err) {
+    console.error("TestimonialsSection: Failed to fetch client feedback streams:", err);
+  }
+
+  const safeTestimonials = testimonials || [];
+
+  // Early exit if no active testimonials exist to preserve vertical page space
+  if (safeTestimonials.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-16 sm:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Block */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             What Our Customers Say
@@ -78,6 +66,8 @@ export function TestimonialsSection() {
             Join thousands of satisfied customers worldwide
           </p>
         </div>
+
+        {/* Shadcn UI Carousel Engine */}
         <Carousel
           opts={{
             align: "start",
@@ -85,62 +75,107 @@ export function TestimonialsSection() {
             slidesToScroll: 1,
             breakpoints: {
               "(min-width: 768px)": {
-                slidesToScroll: 2, // 💻 Tab: Moves 3 cards at a time
+                slidesToScroll: 2,
               },
               "(min-width: 1024px)": {
-                slidesToScroll: 3, // 💻 Desktop: Moves 3 cards at a time
+                slidesToScroll: 3,
               },
             },
           }}
-          className="w-full"
+          className="w-full relative pr-0 xl:pr-1 pl-0 lg:pl-1"
         >
-          {/* 1. Replaced the CSS Grid div with CarouselContent */}
           <CarouselContent className="-ml-4">
-            {testimonials.map((testimonial) => (
-              <CarouselItem
-                // 2. Fixed the key to use testimonial details
-                key={testimonial.id}
-                // 3. Adjusted responsive basis weights for clean spacing
-                className="pl-4 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3"
-              >
-                <div className="relative flex h-full flex-col rounded-2xl border bg-card p-6">
-                  <Quote className="absolute right-6 top-6 h-8 w-8 text-primary/10" />
+            {safeTestimonials.map((review) => {
+              // Extract first letters of the author's name dynamically for the avatar placeholder fallback
+              const initials = review.author
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .substring(0, 2)
+                .toUpperCase();
 
-                  <div className="mb-4 flex items-center gap-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 fill-amber-400 text-amber-400"
-                      />
-                    ))}
-                  </div>
+              return (
+                <CarouselItem
+                  key={review._id}
+                  className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
+                >
+                  <div className="relative flex h-full min-h-65 flex-col justify-between rounded-3xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+                    
+                    {/* Visual Quote Accent Mark */}
+                    <Quote className="absolute right-6 top-6 h-8 w-8 text-primary/5 pointer-events-none" />
 
-                  <p className="flex-1 text-muted-foreground">
-                    {`"${testimonial.content}"`}
-                  </p>
-
-                  <div className="mt-6 flex items-center gap-3 border-t pt-6">
-                    <Avatar>
-                      <AvatarFallback className="bg-primary/10 text-primary">
-                        {testimonial.avatar}
-                      </AvatarFallback>
-                    </Avatar>
                     <div>
-                      <p className="font-medium">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {testimonial.role}
+                      {/* Interactive Star Matrix Row */}
+                      <div className="mb-4 flex items-center gap-1">
+                        {[...Array(5)].map((_, index) => (
+                          <Star
+                            key={index}
+                            className={`h-4 w-4 ${
+                              index < review.rating
+                                ? "fill-amber-400 text-amber-400"
+                                : "fill-muted text-muted"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Review Block Body Quote */}
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {`"${review.content}"`}
                       </p>
                     </div>
+
+                    {/* Author Profile Footer Block */}
+                    <div className="mt-6 flex items-center justify-between border-t pt-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10 border">
+                          {review.avatar?.asset?._ref ? (
+                            <div className="relative h-full w-full">
+                              <Image
+                                src={urlFor(review.avatar).width(80).height(80).url()}
+                                alt={`${review.author} avatar headshot`}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                              {initials}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        
+                        <div>
+                          <p className="text-sm font-semibold tracking-tight text-foreground">
+                            {review.author}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {review.role}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Optional Trust Badging Checkmark block */}
+                      {review.isVerifiedPurchase && (
+                        <Badge variant="secondary" className="h-5 gap-1 text-[10px] px-2 font-medium bg-emerald-500/10 text-emerald-600 border-none hover:bg-emerald-500/10">
+                          <Check className="h-3 w-3 stroke-3" />
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+
                   </div>
-                </div>
-              </CarouselItem>
-            ))}
+                </CarouselItem>
+              );
+            })}
           </CarouselContent>
 
-          {/* Hidden on small screens so they don't overlap your layout awkwardly */}
+          {/* Navigation Controls Context Arrows */}
           <CarouselPrevious className="hidden md:inline-flex" />
           <CarouselNext className="hidden md:inline-flex" />
+
         </Carousel>
+
       </div>
     </section>
   );
