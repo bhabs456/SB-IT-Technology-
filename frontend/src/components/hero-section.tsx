@@ -5,10 +5,10 @@ import { ArrowRight } from "lucide-react"
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-secondary/50">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32 ">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
+        <div className="grid items-center gap-12 lg:grid-cols-2 ">
           {/* Content */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 ">
             <div className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
               New Arrivals 2024
             </div>
@@ -51,7 +51,7 @@ export function HeroSection() {
           </div>
 
           {/* Hero Image/Visual */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent p-8 lg:aspect-[4/3]">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="grid grid-cols-2 gap-4">
@@ -102,7 +102,7 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

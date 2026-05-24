@@ -26,7 +26,7 @@ export const categoriesQuery = groq`
 
 export const brandPartnerQuery = groq`
   *[_type == "brandPartner" && isActive == true] | order(orderWeight asc) {
-    "id": brandId.current,
+    "id": coalesce(brandId.current, _id), 
     name,
     logo,
     websiteUrl

@@ -26,13 +26,22 @@ export const brandPartner = {
     },
     {
       name: "logo",
-      title: "Brand Logo Graphic",
+      title: "Brand Logo Graphic (Light Mode)",
       type: "image",
-      description: "High-quality vector transparent logo asset that replaces the fallback text letters in your carousel layout tracks.",
+      description: "High-quality vector transparent logo asset used for the default light theme layout tracks.",
       options: {
-        hotspot: true, // Enables precise cropping inside the Sanity studio panel
+        hotspot: true,
       },
       validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: "logoDark",
+      title: "Brand Logo Graphic (Dark Mode - Optional)",
+      type: "image",
+      description: "Optional. White, bright, or high-contrast alternative logo version that swaps in automatically on dark layout themes.",
+      options: {
+        hotspot: true,
+      },
     },
     {
       name: "websiteUrl",

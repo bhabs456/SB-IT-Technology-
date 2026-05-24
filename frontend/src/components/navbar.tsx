@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { client } from "@/sanity/client";
 import { siteSettingsQUERY, categoriesQuery } from "@/sanity/lib/queries"; // Adjusted query path if needed
 import { urlFor } from "@/sanity/lib/image";
+import { ThemeToggle } from "./theme-toggle";
 
 // Define TypeScript shapes matching your database fields
 interface CategoryData {
@@ -45,8 +46,8 @@ export async function Navbar() {
   const wishlistCount = 0;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-backdrop-filter:bg-card/80">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         
         {/* Logo and Brand Title Layout */}
         <Link href="/" className="flex items-center gap-1">
@@ -178,6 +179,10 @@ export async function Navbar() {
               </div>
             </div>
           </div>
+
+          {/* Toggle Light and Dark Theme */}
+          <ThemeToggle />
+
 
           {/* Mobile Navigation Sidebar Drawer Menu Link Trigger */}
           <Button variant="ghost" size="icon" className="lg:hidden" asChild>

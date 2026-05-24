@@ -16,7 +16,7 @@ export default function HomePage() {
         <HeroSection />
         <CategoriesSection />
         <TrendingSection />
-        <FlashSaleSection />
+        {/* <FlashSaleSection /> */}
         <BrandsSection />
         <TestimonialsSection />
         <NewsletterSection />

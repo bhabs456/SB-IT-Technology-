@@ -21,6 +21,14 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 // Sample product data
 const products: Record<
   string,
@@ -43,12 +51,12 @@ const products: Record<
 > = {
   "1": {
     id: "1",
-    name: 'MacBook Pro 16" M3 Max',
-    description: "Apple M3 Max chip, 36GB RAM, 1TB SSD",
+    name: 'MacBook Pro 13"',
+    description: "Apple M5 Max chip, 36GB RAM, 1TB SSD",
     longDescription:
       "The most powerful MacBook Pro ever. The M3 Max chip delivers exceptional performance for the most demanding professional workflows. With up to 36GB of unified memory, the 16-inch Liquid Retina XDR display, and all-day battery life, this is the ultimate pro notebook.",
-    price: 3499,
-    originalPrice: 3999,
+    price: 109000,
+    originalPrice: 119000,
     rating: 4.9,
     reviewCount: 2847,
     category: "Laptops",
@@ -77,6 +85,9 @@ const products: Record<
       "/products/macbook-1.jpg",
       "/products/macbook-2.jpg",
       "/products/macbook-3.jpg",
+      "/products/macbook-4.jpg",
+      "/products/macbook-5.jpg",
+      "/products/macbook-6.jpg",
     ],
   },
 };
@@ -158,6 +169,28 @@ const relatedProducts: Product[] = [
     badge: "New",
     inStock: true,
   },
+  {
+    id: "78",
+    name: "Apple Watch Ultra 2",
+    description: "49mm Titanium, GPS + Cellular",
+    price: 799,
+    rating: 4.9,
+    reviewCount: 3287,
+    category: "Wearables",
+    inStock: true,
+  },
+  {
+    id: "29",
+    name: "iPhone 16 Pro Max 256GB",
+    description: '6.9" Super Retina XDR, A18 Pro chip',
+    price: 1199,
+    rating: 4.8,
+    reviewCount: 5621,
+    category: "Smartphones",
+    badge: "New",
+    inStock: true,
+  },
+  
 ];
 
 export default function ProductDetailContent({
@@ -275,20 +308,22 @@ export default function ProductDetailContent({
 
           {/* Price */}
           <div className="mt-6 flex items-baseline gap-3">
-            <span className="text-4xl font-bold">
-              ${product.price.toLocaleString()}
+            <span className="text-3xl font-bold">
+              ₹{product.price.toLocaleString("en-IN")}
             </span>
             {product.originalPrice && (
               <span className="text-xl text-muted-foreground line-through">
-                ${product.originalPrice.toLocaleString()}
+                ₹{product.originalPrice.toLocaleString("en-IN")}
               </span>
             )}
-            {discount > 0 && (
+            {/* {discount > 0 && (
               <Badge variant="destructive">
-                Save $
-                {(product.originalPrice! - product.price).toLocaleString()}
+                Save ₹
+                {(product.originalPrice! - product.price).toLocaleString(
+                  "en-IN",
+                )}
               </Badge>
-            )}
+            )} */}
           </div>
 
           {/* Description */}
@@ -317,7 +352,10 @@ export default function ProductDetailContent({
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <Button size="lg" className="flex-1 gap-2 rounded-xl">
+            <Button
+              size="lg"
+              className="flex-1 gap-2 rounded-xl cursor-pointer"
+            >
               <ShoppingCart className="h-5 w-5" />
               Add to Cart
             </Button>
@@ -334,7 +372,11 @@ export default function ProductDetailContent({
             </Button>
           </div>
 
-          <Button size="lg" variant="secondary" className="mt-3 rounded-xl">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="mt-3 rounded-xl cursor-pointer hover:bg-primary hover:text-secondary"
+          >
             Buy Now
           </Button>
 
@@ -346,7 +388,9 @@ export default function ProductDetailContent({
               </div>
               <div>
                 <p className="font-medium">Free Shipping</p>
-                <p className="text-sm text-muted-foreground">Orders over $99</p>
+                <p className="text-sm text-muted-foreground">
+                  Orders over ₹5999
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -378,7 +422,7 @@ export default function ProductDetailContent({
                 <Check className="h-5 w-5 text-emerald-500" />
                 <span className="text-emerald-600">In Stock</span>
                 <span className="text-muted-foreground">
-                  - Ships within 24 hours
+                  - Ships within 24-48 hours
                 </span>
               </>
             ) : (
@@ -398,6 +442,9 @@ export default function ProductDetailContent({
             <TabsTrigger value="features" className="rounded-lg">
               Features
             </TabsTrigger>
+            {/* <TabsTrigger value="Item Details" className="rounded-lg">
+              Item Details
+            </TabsTrigger> */}
             <TabsTrigger value="reviews" className="rounded-lg">
               Reviews ({product.reviewCount.toLocaleString()})
             </TabsTrigger>
@@ -431,6 +478,22 @@ export default function ProductDetailContent({
               </ul>
             </div>
           </TabsContent>
+
+          {/* <TabsContent value="Item Details" className="mt-6">
+            <div className="rounded-2xl border bg-card">
+              <div className="divide-y">
+                {product.specs.map((spec, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between px-6 py-4"
+                  >
+                    <span className="text-muted-foreground">{spec.label}</span>
+                    <span className="font-medium">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TabsContent> */}
 
           <TabsContent value="reviews" className="mt-6">
             <div className="flex flex-col gap-6">
@@ -490,11 +553,40 @@ export default function ProductDetailContent({
       {/* Related Products */}
       <section className="mt-16">
         <h2 className="mb-8 text-2xl font-bold">You May Also Like</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {relatedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+
+        <Carousel
+          opts={{
+            align: "start",
+            loop: false,
+            slidesToScroll: 2,
+            breakpoints: {
+              "(min-width: 768px)": {
+                slidesToScroll: 2, // Moves 2 cards at a time on tablets
+              },
+              "(min-width: 1024px)": {
+                slidesToScroll: 4, // 💻 Desktop: Moves 4 cards at a time to match layout
+              },
+            },
+          }}
+          className="w-full"
+        >
+          {/* -ml-6 compensates for the pl-6 padding on individual items */}
+          <CarouselContent className="-ml-6">
+            {relatedProducts.map((product) => (
+              <CarouselItem
+                key={product.id}
+                // basis match: mobile = 1 per view, sm = 2 per view, lg = 4 per view (matching your original grid)
+                className="pl-6 basis-full sm:basis-1/2 lg:basis-1/4"
+              >
+                <ProductCard product={product} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+
+          {/* Hidden on small screens so they don't overlap your layout awkwardly */}
+          <CarouselPrevious className="hidden md:inline-flex" />
+          <CarouselNext className="hidden md:inline-flex" />
+        </Carousel>
       </section>
     </div>
   );
