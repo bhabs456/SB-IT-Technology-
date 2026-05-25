@@ -44,3 +44,13 @@ export const testimonialsQuery = groq`
     isVerifiedPurchase
   }
 `;
+
+export const heroProductsQuery = groq`
+  *[_type == "product" && isFeaturedInHero == true] | order(_createdAt desc) {
+    name,
+    price,
+    "slug": slug.current,
+    "imageUrl": productImage.asset->url,
+    "imageAlt": productImage.alt
+  }
+`;
