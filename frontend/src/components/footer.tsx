@@ -1,4 +1,3 @@
-// components/footer.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-react";
@@ -65,7 +64,7 @@ export async function Footer() {
   return (
     <footer className="border-t bg-card">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-6">
+        <div className="flex flex-col sm:flex-row gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-1">
@@ -87,7 +86,7 @@ export async function Footer() {
                 {siteName}
               </span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-muted-foreground">
+            <p className="mt-4 max-w-xs sm:max-w-lg text-sm text-muted-foreground">
               {description}
             </p>
 
@@ -112,8 +111,10 @@ export async function Footer() {
               </div>
             )}
           </div>
+
           {/* Links Layout Engines */}
-          <div>
+          <div className="w-full grid gap-8 grid-cols-2 md:grid-cols-4">
+            <div>
             <h3 className="text-sm font-semibold">Shop</h3>
             <ul className="mt-4 space-y-3">
               {footerLinks.shop.map((link) => (
@@ -128,6 +129,7 @@ export async function Footer() {
               ))}
             </ul>
           </div>
+
           <div>
             <h3 className="text-sm font-semibold">Support</h3>
             <ul className="mt-4 space-y-3">
@@ -143,6 +145,7 @@ export async function Footer() {
               ))}
             </ul>
           </div>
+
           <div>
             <h3 className="text-sm font-semibold">Company</h3>
             <ul className="mt-4 space-y-3">
@@ -158,6 +161,7 @@ export async function Footer() {
               ))}
             </ul>
           </div>
+
           <div>
             <h3 className="text-sm font-semibold">Legal</h3>
             <ul className="mt-4 space-y-3">
@@ -172,7 +176,9 @@ export async function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div></div>
+          
+
         </div>
         {/* Bottom Bar Container */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">

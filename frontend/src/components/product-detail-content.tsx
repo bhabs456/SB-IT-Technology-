@@ -190,7 +190,6 @@ const relatedProducts: Product[] = [
     badge: "New",
     inStock: true,
   },
-  
 ];
 
 export default function ProductDetailContent({
@@ -236,18 +235,16 @@ export default function ProductDetailContent({
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Product Images */}
         <div className="flex flex-col gap-4">
-          <div className="relative aspect-square overflow-hidden rounded-3xl">
-            <div className="flex h-full items-center justify-center">
-              <div className="h-74 w-74 rounded-3xl">
-                <Image
-                  src={product.images[selectedImage]}
-                  alt={product.name}
-                  fill
-                  priority
-                  className="object-cover rounded-xl"
-                />
-              </div>
-            </div>
+          {/* Main Image Viewport */}
+          <div className="relative aspect-square w-full overflow-hidden rounded-3xl">
+            <Image
+              src={product.images[selectedImage]}
+              alt={product.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+            />
             {product.badge && (
               <Badge className="absolute left-4 top-4">{product.badge}</Badge>
             )}
@@ -257,23 +254,24 @@ export default function ProductDetailContent({
               </Badge>
             )}
           </div>
-          <div className="flex gap-3">
+
+          {/* Responsive Thumbnails */}
+          <div className="grid grid-cols-3 gap-3 items-center justify-center sm:grid-cols-6">
             {product.images.map((imageSrc, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedImage(i)}
-                className={`aspect-square w-20 overflow-hidden cursor-pointer rounded-xl transition-all duration-200 
-                ${selectedImage === i ? "border-2 border-primary/60 bg-background shadow-sm opacity-100" : "border-2 border-transparent"}
+                className={`relative aspect-square w-full shrink-0 overflow-hidden cursor-pointer rounded-xl transition-all duration-200 sm:w-auto
+                ${selectedImage === i ? "border-2 border-primary/60 opacity-100" : "border-2 border-transparent opacity-70 hover:opacity-100"}
                 `}
-              >
-                <div className="relative h-full w-full">
-                  <Image
-                    src={imageSrc}
-                    alt={`${product.name} thumbnail`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                >
+                <Image
+                  src={imageSrc}
+                  alt={`${product.name} thumbnail`}
+                  fill
+                  sizes="(max-width: 768px) 64px, 100px"
+                  className="object-cover"
+                />
               </button>
             ))}
           </div>
@@ -342,7 +340,7 @@ export default function ProductDetailContent({
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <span className="w-12 text-center font-medium">{quantity}</span>
+              <span className="w-full sm:w-12 text-center font-medium">{quantity}</span>
               <Button
                 variant="ghost"
                 size="icon"
@@ -354,7 +352,8 @@ export default function ProductDetailContent({
             </div>
             <Button
               size="lg"
-              className="flex-1 gap-2 rounded-xl cursor-pointer"
+              
+              className="w-full sm:flex-1 gap-2 rounded-xl cursor-pointer"
             >
               <ShoppingCart className="h-5 w-5" />
               Add to Cart
@@ -442,9 +441,9 @@ export default function ProductDetailContent({
             <TabsTrigger value="features" className="rounded-lg">
               Features
             </TabsTrigger>
-            {/* <TabsTrigger value="Item Details" className="rounded-lg">
+            <TabsTrigger value="Item Details" className="rounded-lg hidden sm:block">
               Item Details
-            </TabsTrigger> */}
+            </TabsTrigger>
             <TabsTrigger value="reviews" className="rounded-lg">
               Reviews ({product.reviewCount.toLocaleString()})
             </TabsTrigger>
@@ -479,7 +478,7 @@ export default function ProductDetailContent({
             </div>
           </TabsContent>
 
-          {/* <TabsContent value="Item Details" className="mt-6">
+          <TabsContent value="Item Details" className="mt-6">
             <div className="rounded-2xl border bg-card">
               <div className="divide-y">
                 {product.specs.map((spec, i) => (
@@ -493,7 +492,7 @@ export default function ProductDetailContent({
                 ))}
               </div>
             </div>
-          </TabsContent> */}
+          </TabsContent>
 
           <TabsContent value="reviews" className="mt-6">
             <div className="flex flex-col gap-6">
