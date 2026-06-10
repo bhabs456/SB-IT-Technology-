@@ -28,7 +28,9 @@ export function HeroCarousel({ safeProducts }: HeroCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [textFade, setTextFade] = useState(false);
+  
 
+  
   // Track slide change events from Embla
   const onSelect = useCallback(() => {
     if (!api) return;
